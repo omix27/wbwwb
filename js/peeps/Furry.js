@@ -1,5 +1,5 @@
 Game.addToManifest({
-	happy_weirdo: "sprites/peeps/happy_weirdo.json"
+	furry: "sprites/peeps/furry.json"
 });
 
 /****
@@ -11,19 +11,20 @@ FRAMES:
 
 ****/
 
-function HappyWeirdoPeep(scene){
+function FurryPeep(scene){
 
 	var self = this;
 	Peep.apply(self, [scene]);
-    self._CLASS_ = "HappyWeirdoPeep";
+    self.type = "square"
+    self._CLASS_ = "FurryPeep";
 
     // position
-    self.x = 115;
+    self.x = 0;
     self.y = 170;
 
 	// MAD SPRITE
     var g = self.graphics;
-    self.bodyMC = self.addMovieClip("happy_weirdo");
+    self.bodyMC = self.addMovieClip("furry");
     self.bodyMC.anchor.x = 0.35; // not quite
 
     // MODE o' ANIMATION
@@ -114,13 +115,28 @@ function HappyWeirdoPeep(scene){
 
     };
 
+    self.confused = false;
+    self.beConfused = function(target){
+
+        self.flip = (target.x>self.x) ? 1 : -1;
+        self.confused = true;
+        self.stopWalking();
+
+
+        self.setTimeout(function(){
+
+            self.startWalking();
+            self.confused = false;
+
+        },_s(2.2));
+    }
     // Prepare to get murdered
     self.prepareForMurder = function(){
 
         // Wobble in place
         self.stopWalking();
         self.x = 540;
-        self.y = 470;
+        self.y = 490;
         self.vel.x = -1;
         self.vel.y = 0;
         self.flip = -1;

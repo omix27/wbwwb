@@ -16,9 +16,16 @@ function Stage_Evil(self, HACK){
 
     // HACK - The happy one
     if(HACK){
-        self.world.addPeep(new HappyWeirdoPeep(self));
+        self.world.addPeep(new FurryPeep(self));
         self.world.addProp(new ProtestAnim(self));
     }
+
+    self.avoidSpots.splice(0, self.avoidSpots.length);
+    self.avoidSpots.push({
+        x: 530,
+        y: 430,
+        radius: 150
+    });
 
 	// FREEZE EVERYONE
 	var _freezeEveryone = function(){
@@ -27,7 +34,7 @@ function Stage_Evil(self, HACK){
 
 		// Freeze all Angry & Normal peeps.
 		var freezeEm = peeps.filter(function(peep){
-			return(peep._CLASS_=="NormalPeep" || peep._CLASS_=="AngryPeep");
+			return(peep._CLASS_=="NormalPeep" || peep._CLASS_=="AngryPeep" || peep._CLASS_=="LoverH");
 		});
 		freezeEm.forEach(function(oldPeep){
 
@@ -41,6 +48,12 @@ function Stage_Evil(self, HACK){
             stunnedPeep.update(); // JUST. IN. CASE.
 
 		});
+        var GoodHat = self.world.peeps.filter(function(peep){
+            return peep._CLASS_=="HatPeep";
+         })[0];
+        GoodHat.frown()
+        happyWeirdo2.frown()
+
 
 		// Freeze the Protesters
 		var lovers = self.world.props.filter(function(prop){
@@ -60,11 +73,16 @@ function Stage_Evil(self, HACK){
 
     // Happy Guy is prepared to die.
     var happy = self.world.peeps.filter(function(peep){
-        return peep._CLASS_=="HappyWeirdoPeep";
+        return peep._CLASS_=="FurryPeep";
     })[0];
     happy.prepareForMurder();
     
     // The MURDERER
+    var happyWeirdo2 = self.world.peeps.filter(function(peep){
+        return peep._CLASS_=="HappyWeirdoPeep";
+    })[0];
+
+
     var murderer = new EvilHatPeep(self);
     murderer.victim = happy;
     murderer.freezeEveryone = _freezeEveryone;
@@ -92,6 +110,8 @@ function Stage_Evil(self, HACK){
                 }
             })
             .otherwise(_chyProtest)
+            .otherwise(_Furry)
+            .otherwise(_HLover)
             .otherwise(_chyAngry)
             .otherwise(_chyWeirdo)
             .otherwise(_chyShocked)
@@ -129,12 +149,7 @@ function Stage_Panic(self){
     self.shaker.shake(100);
 
     // ONLY ONE AVOIDSPOT
-    self.avoidSpots.splice(0, self.avoidSpots.length);
-    self.avoidSpots.push({
-        x: 530,
-        y: 430,
-        radius: 150
-    });
+
 
     // Replace EVERYONE with a PANIC
     var peeps = self.world.peeps;
@@ -159,9 +174,12 @@ function Stage_Panic(self){
     panicSquare.setLover("square");
     self.world.addPeep(panicSquare);
 
+
+
+
     // EXPLODE THE HAPPY ONE
     var happy = self.world.peeps.filter(function(peep){
-        return peep._CLASS_=="HappyWeirdoPeep";
+        return peep._CLASS_=="FurryPeep";
     })[0];
 
     // Happy One's corpse.
@@ -172,7 +190,7 @@ function Stage_Panic(self){
         x: happy.x,
         y: happy.y,
         flip: -1,
-        frame: 0
+        frame: 13
     });
     self.world.addProp(deadbody);    
 
@@ -191,6 +209,11 @@ function Stage_Panic(self){
 
     // KILL
     happy.kill();
+
+    var GoodHat2 = self.world.peeps.filter(function(peep){
+        return peep._CLASS_=="HatPeep";
+    })[0];
+    GoodHat2.panic();
 
     // Zoomer... what to do when DONE?
     self.zoomer.onComplete = function(){
@@ -222,14 +245,16 @@ function Stage_Panic(self){
             d.audience_cutToTV();
 
             // Get rid of Hat Guy, if not done so already.
-            var peeps = self.world.peeps;
             var murderer = peeps.filter(function(peep){
-                return peep._CLASS_=="EvilHatPeep";
+                return peep._CLASS_=="HappyWeirdoPeep";
             })[0];
             if(murderer){
-                murderer.kill();
-                // AND NO AVOIDSPOTS ANYMORE
+                var crazy3 = new CrazyPeep(self);
+                self.world.addPeep(crazy3);
                 self.avoidSpots.splice(0, self.avoidSpots.length);
+                crazy3.x = murderer.x;
+                crazy3.y =  murderer.y;
+                murderer.kill();
             }
 
             // DELETE ANY PREV MURDERERS.

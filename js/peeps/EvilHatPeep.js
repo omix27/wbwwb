@@ -19,6 +19,7 @@ function EvilHatPeep(scene){
     var self = this;
     Peep.apply(self, [scene]);
     self._CLASS_ = "EvilHatPeep";
+    self.type ="circle"
 
     // Add the body & GUN sprites
     self.gunMC = self.addMovieClip("gun");
@@ -85,7 +86,7 @@ function EvilHatPeep(scene){
 
     };
     // WOBBLE IN PLACE
-    /*self.standAnim = function(){
+    self.standAnim = function(){
 
         // Hop & flip
         self.hop += self.speed/200;
@@ -97,7 +98,7 @@ function EvilHatPeep(scene){
         g.rotation = Math.sin(t)*0.035;
         g.pivot.y = 0;
 
-    };*/
+    }
 
     // IT'S MURDER TIME
     self.isMurdering = false;
@@ -138,5 +139,66 @@ function EvilHatPeep(scene){
         },_s(0.5+1.5+4.0));
 
     }
+    //he will die
+    self.getKilledBy = function(killer){
+
+        var CORPSE_FRAME, CORPSE_VELOCITY, GORE_AMOUNT;
+        switch(killer.weaponType){
+            case "gun":
+                CORPSE_FRAME = 0;
+                CORPSE_VELOCITY = 2;
+                GORE_AMOUNT = 5;
+                break;
+            case "bat":
+                CORPSE_FRAME = 1;
+                CORPSE_VELOCITY = 5;
+                GORE_AMOUNT = 15;
+                break;
+            case "shotgun":
+                CORPSE_FRAME = 2;
+                CORPSE_VELOCITY = 10;
+                GORE_AMOUNT = 30;
+                break;
+            case "axe":
+                CORPSE_FRAME = 3;
+                CORPSE_VELOCITY = 5;
+                GORE_AMOUNT = 15;
+                break;
+        }
+
+        // SCREEN SHAKE
+        scene.shaker.shake(30);
+
+        // MY CORPSE
+        var flip = (killer.x<self.x) ? -1 : 1;
+        var frameOffset = (self.type=="circle") ? 0 : 1;
+        var deadbody = new DeadBody(scene);
+        deadbody.init({
+            direction: -Math.TAU/4 - flip*0.7,
+            velocity: CORPSE_VELOCITY,
+            x: self.x,
+            y: self.y,
+            flip: flip,
+            frame: 12
+        });
+        scene.world.addProp(deadbody);    
+
+        // MY GORE
+        for(var i=0;i<GORE_AMOUNT;i++){
+            var gore = new Gore(scene);
+            gore.init({
+                direction: -Math.TAU/4 - flip*Math.random()*0.5,
+                velocity: CORPSE_VELOCITY+Math.random()*7,
+                x: self.x,
+                y: self.y,
+                z: (Math.random()*-30)
+            });
+            scene.world.addProp(gore);
+        }
+
+        // KILL
+        self.kill();
+
+    };
 
 }

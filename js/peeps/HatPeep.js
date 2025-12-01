@@ -11,6 +11,7 @@ JUST WADDLE BACK & FORTH
 function HatPeep(scene){
 
 	var self = this;
+    self.type ="circle"
 	Peep.apply(self, [scene]);
     self._CLASS_ = "HatPeep";
 
@@ -26,7 +27,22 @@ function HatPeep(scene){
         },0.05);
 
     };
+    self.frown = function(){
+        self.stopWalking();
+    };
+    self.panic = function(){
+        self.callbacks.startWalking = function(){
+            self.speed = 3+Math.random()*2;
+        };
+        self.loop = false;
+        self.startWalking();
+    }
 
+    self.callbacks.update = function(){
+        if(self.y<-500){
+              self.kill();
+         }
+    }
     // WEIRD WALK
     self.walkAnim = function(){
 
@@ -42,5 +58,38 @@ function HatPeep(scene){
         g.pivot.y = Math.abs(Math.sin(t))*7;
 
     };
+
+    self.offended = false;
+    self.beOffended = function(target){
+
+        self.flip = (target.x>self.x) ? 1 : -1;
+        self.offended = true;
+        self.stopWalking();
+
+        self.clearAnims(); // just in case...
+
+        // Blink
+        self.bounce = 1.2;
+
+        // Walk away
+        self.setTimeout(function(){
+            self.startWalking();
+            self.offended = false;
+        },_s(3));
+
+    };
+    self.shocked = false;
+    self.beShocked = function(){
+        
+        self.shocked = true;
+        self.stopWalking();
+ 
+
+        self.setTimeout(function(){
+            self.startWalking();
+            self.shocked = false;
+        },_s(2));
+
+    }
 
 }

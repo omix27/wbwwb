@@ -17,6 +17,7 @@ FRAMES:
 function CrazyPeep(scene){
 
 	var self = this;
+    self.type = "square"
 	Peep.apply(self, [scene]);
     self._CLASS_ = "CrazyPeep";
 
@@ -98,9 +99,19 @@ function CrazyPeep(scene){
                 // SHOCK 'EM
                 closeTo.forEach(function(other){
                     if(!other.isWalking) return;
-                    other.vel.x = self.flip*10;
-                    other.flip = -1*self.flip;
-                    other.beShocked();
+
+                    if (other._CLASS_ == "PanicPeep"){
+                        self.weaponType = "bat";
+                        closeTo[0].getKilledBy(self);
+                    }else{
+                        other.flip = -1*self.flip;
+                        other.beShocked();
+                        other.vel.x = self.flip*10;
+                    }
+                    if  (other._CLASS_ == "EvilHatPeep"){
+                        self.weaponType = "bat";
+                        closeTo[0].getKilledBy(self);
+                    }
                 });
 
             }
@@ -162,10 +173,102 @@ function CrazyPeep(scene){
         }
 
     };
+    self.shocked = false;
+    self.beShocked = function(){
+        
+        self.shocked = true;
+        self.stopWalking();
+ 
 
+        self.setTimeout(function(){
+            self.startWalking();
+            self.shocked = false;
+        },_s(2));
+
+    }
+
+    self.confused = false;
+    self.beConfused = function(target){
+
+        self.flip = (target.x>self.x) ? 1 : -1;
+        self._CLASS_ = "NormalPeep";
+        self.confused = true;
+        self.stopWalking();
+        self.bounce = 1.1;
+
+
+        self.setTimeout(function(){
+
+            self.startWalking();
+            self.confused = false;
+            self._CLASS_ = "CrazyPeep";
+
+        },_s(2.2));
+    }
     // IS SCREAMING?
     self.isScreaming = function(){
         return(loopScreaming>=0);
     };
 
+    //he will die
+    self.getKilledBy = function(killer){
+
+        var CORPSE_FRAME, CORPSE_VELOCITY, GORE_AMOUNT;
+        switch(killer.weaponType){
+            case "gun":
+                CORPSE_FRAME = 0;
+                CORPSE_VELOCITY = 2;
+                GORE_AMOUNT = 5;
+                break;
+            case "bat":
+                CORPSE_FRAME = 1;
+                CORPSE_VELOCITY = 5;
+                GORE_AMOUNT = 15;
+                break;
+            case "shotgun":
+                CORPSE_FRAME = 2;
+                CORPSE_VELOCITY = 10;
+                GORE_AMOUNT = 30;
+                break;
+            case "axe":
+                CORPSE_FRAME = 3;
+                CORPSE_VELOCITY = 5;
+                GORE_AMOUNT = 15;
+                break;
+        }
+
+        // SCREEN SHAKE
+        scene.shaker.shake(30);
+
+        // MY CORPSE
+        var flip = (killer.x<self.x) ? -1 : 1;
+        var frameOffset = (self.type=="circle") ? 0 : 1;
+        var deadbody = new DeadBody(scene);
+        deadbody.init({
+            direction: -Math.TAU/4 - flip*0.7,
+            velocity: CORPSE_VELOCITY,
+            x: self.x,
+            y: self.y,
+            flip: flip,
+            frame: 0
+        });
+        scene.world.addProp(deadbody);    
+
+        // MY GORE
+        for(var i=0;i<GORE_AMOUNT;i++){
+            var gore = new Gore(scene);
+            gore.init({
+                direction: -Math.TAU/4 - flip*Math.random()*0.5,
+                velocity: CORPSE_VELOCITY+Math.random()*7,
+                x: self.x,
+                y: self.y,
+                z: (Math.random()*-30)
+            });
+            scene.world.addProp(gore);
+        }
+
+        // KILL
+        self.kill();
+
+    };
 }

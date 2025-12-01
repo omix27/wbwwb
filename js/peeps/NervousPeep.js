@@ -106,7 +106,7 @@ function NervousPeep(scene){
         // Shocked by a square!
         if(!self.isShocked){
             var closeTo = self.touchingPeeps(90, function(peep){
-                return(peep.isWalking && peep.type=="square");
+                return(peep.isWalking && peep._CLASS_ == "FurryPeep");
             });
             if(closeTo.length>0 && self.isWalking){
 
@@ -162,10 +162,10 @@ function NervousPeep(scene){
         }
 
     };
-
+    
     // Speed...
     self.callbacks.startWalking = function(){
-        self.speed = 0.8;
+        self.speed = 1.2;
     };
 
     // AT FIRST...

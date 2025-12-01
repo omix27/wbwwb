@@ -2,7 +2,7 @@
 ///// TEXT STRINGS ////////////////
 ///////////////////////////////////
 
-var textStrings_EN = {
+var textStrings = {
 	// Act 1
 	"niceHat": "OOH NICE HAT",
 	"outtaHere": "yeah git on outta here",
@@ -14,13 +14,13 @@ var textStrings_EN = {
 	"normalPeep": "just a normal peep",
 	"normalPeeps": "just some normal peeps",
 	"wowNothing": "WOWWEE, IT'S NOTHING",
-
+	"strangeCircle": "What is he supposed to be doing? ",
 	// Act 2
 	"crazySquareAttacks": "CRAZED SQUARE ATTACKS",
 	"justMissed": "oooooh just missed it",
 	"somethingInteresting": "(ya gotta catch 'em doing *something* interesting...)",
 	"whoIsScreaming": "(ya gotta catch who's screaming at 'em)",
-	"circleFearsSquares": "CIRCLE FEARS SQUARES",
+	"circleFearsSquares": "CIRCLE DISLIKES FURRIES",
 	"whoScaresThem": "(ya gotta also catch *who* they're scared by)",
 	"areTheyScared": "(ya gotta catch 'em *being* scared by a square)", // not used
 	"squaresSnubCircles": "SQUARES SNUB CIRCLES",
@@ -33,6 +33,7 @@ var textStrings_EN = {
 	"nerdsNow": "what are these nerds doing now",
 	"schockedPeep": "why's this peep shocked?",
 	"whatever": "whatever",
+	"strangeFurry": "FURRY",
 
 	// Act 3
 	"ellipsis": ". . .",

@@ -14,7 +14,8 @@ function Stage_Screamer(self){
     // The crazy one
     var crazy = new CrazyPeep(self);
     self.world.addPeep(crazy);
-
+    var furry = new FurryPeep(self);
+    self.world.addPeep(furry);
     // Director
     self.director.callbacks = {
         takePhoto: function(d){
@@ -46,7 +47,9 @@ function Stage_Screamer(self){
                 }
                 return false;
             })
+            .otherwise(_HLover)
             .otherwise(_chyLovers)
+            .otherwise(_Furry)
             .otherwise(_chyHats)
             .otherwise(function(d){
                 var p = d.photoData;
@@ -104,6 +107,8 @@ function Stage_Nervous(self, HACK){
         var nervous = new NervousPeep(self);
         self.world.addPeep(nervous);
         nervous.HACK_JUMPSTART();
+
+       // nervous2.HACK_JUMPSTART();
     }
 
     // Director
@@ -117,7 +122,7 @@ function Stage_Nervous(self, HACK){
             d.tryChyron(function(d){
                 var p = d.photoData;
                 var caught = d.caught({
-                    confused: {_CLASS_:"NormalPeep", confused:true},
+                    confused: {_CLASS_:"FurryPeep"},
                     nervous: {_CLASS_:"NervousPeep"}
                 });
                 if(caught.nervous){
@@ -139,6 +144,8 @@ function Stage_Nervous(self, HACK){
                 }
                 return false;
             })
+            .otherwise(_HLover)
+            .otherwise(_Furry)
             .otherwise(_chyHats)
             .otherwise(_chyPeeps);
         
@@ -165,6 +172,7 @@ function Stage_Nervous(self, HACK){
                 }
                 return false;
             })
+
             .otherwise(_cutHats)
             .otherwise(_cutPeeps);
 
@@ -212,6 +220,8 @@ function Stage_Snobby(self, HACK){
                 }
                 return false;
             })
+            .otherwise(_HLover)
+            .otherwise(_Furry)
             .otherwise(_chyHats)
             .otherwise(_chyPeeps);            
 
@@ -253,6 +263,7 @@ function Stage_Snobby(self, HACK){
                 }
                 return false;
             })
+
             .otherwise(_cutHats)
             .otherwise(_cutPeeps);
 
@@ -303,6 +314,8 @@ function Stage_Angry_Escalation(self, HACK){
              .otherwise(_chyAngry)
              .otherwise(_chyWeirdo)
              .otherwise(_chyShocked)
+             .otherwise(_HLover)
+             .otherwise(_Furry)
              .otherwise(_chyPeeps)
 
         },
@@ -337,11 +350,18 @@ function Stage_Angry_Escalation(self, HACK){
             // MORE THAN 66%: BRING IN THE PEACE PROTESTERS
             if(angryRatio>0.5){
                 _addProtesters();
+                var crazy2 = self.world.peeps.filter(function(peep){
+                    return peep._CLASS_=="CrazyPeep";
+                })[0];
+                if (crazy2){
+                  crazy2.kill()
+                }
             }
 
             // ONCE (ALMOST) EVERYONE IS ANGRY, IT'S TIME FOR MURDER
-            if(angryRatio==1.00){ // EXACTLY 1.
+            if(angryRatio>=0.84){ // EXACTLY 1.
                 Stage_Evil(self); // Next stage
+
             }
 
         }
@@ -386,7 +406,7 @@ function _chyAngry(d){
 
         if(caught.angryCircleShouting.length+caught.angrySquareShouting.length>0){
 
-            p.audience = 2;
+            p.audience = 3;
             p.caughtAngry = true;
 
             // How many angrys? (*AFTER* you add 4 more...)
@@ -451,6 +471,18 @@ function _chyProtest(d){
     });
     if(caught.protest) d.chyron = _spoutManifesto();
     return caught.protest;
+}
+
+function _Furry(d){
+    var p = d.photoData;
+    var caught = d.caught({
+        Furry: {_CLASS_:"FurryPeep"}
+    });
+    if(caught.Furry){
+        d.chyron = textStrings["strangeFurry"];
+        return true;
+    }
+    return false;
 }
 
 function _chyWeirdo(d){

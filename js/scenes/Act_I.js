@@ -11,15 +11,21 @@ function Stage_Start(self){
 
     // Create Peeps
     self.world.clearPeeps();
-    self.world.addBalancedPeeps(20);
+    self.world.addBalancedPeeps(19);
 
 }
 
 function Stage_Hat(self){
 
 	// A Hat Guy
+    
+	var hat2 = new HatPeep(self);
+    self.world.addPeep(hat2);
 	var hat = new HatPeep(self);
     self.world.addPeep(hat);
+
+    var loverh = new LoverH(self);
+    self.world.addPeep(loverh);
 
     // Director
     self.director.callbacks = {
@@ -81,6 +87,7 @@ function Stage_Lovers(self){
 
             // MODULAR & DECLARATIVE
             d.tryChyron(_chyLovers)
+             .otherwise(_HLover)
              .otherwise(_chyHats)
              .otherwise(_chyPeeps);
 
@@ -93,8 +100,7 @@ function Stage_Lovers(self){
             // MODULAR & DECLARATIVE
             d.tryCut2TV(_cutLovers)
              .otherwise(_cutHats)
-             .otherwise(_cutPeeps);
-
+             .otherwise(_cutPeeps)
             // And whatever happens, just go to the next stage
             // ACT II!!!
             Stage_Screamer(self);
@@ -109,6 +115,18 @@ function Stage_Lovers(self){
 ////// DECLARATIVE CHYRON MODULES /////
 ///////////////////////////////////////
 ///////////////////////////////////////
+function _HLover(d){
+    var p = d.photoData;
+    var caught = d.caught({
+        loverH: {_CLASS_:"LoverH"}
+    });
+    if(caught.loverH){
+        d.chyron = textStrings["strangeCircle"];
+        return true;
+    }
+    return false;
+}
+
 
 function _chyLovers(d){
     var p = d.photoData;
@@ -132,6 +150,12 @@ function _chyHats(d){
     var caught = d.caught({
         hat: {_CLASS_:"NormalPeep", wearingHat:true}
     });
+    if (!caught.hat){
+        caught = d.caught({
+            hat: {_CLASS_:"HatPeep"}
+        });
+    }
+
     if(caught.hat){
         p.audience = 1;
         p.caughtHat = true;
@@ -139,6 +163,7 @@ function _chyHats(d){
         return true;
     }
     return false;
+
 }
 function _chyPeeps(d){
     var p = d.photoData;

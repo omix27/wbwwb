@@ -140,7 +140,7 @@ function MurderPeep(scene){
             if(!self.isShocked){
                 var otherType = (self.type=="circle") ? "square" : "circle";
                 var closeTo = self.touchingPeeps(120, function(peep){
-                    return(peep._CLASS_=="PanicPeep" && peep.type==otherType);
+                    return((peep._CLASS_=="PanicPeep" && peep.type==otherType) || peep._CLASS_=="EvilHatPeep" || peep._CLASS_=="CrazyPeep");
                 });
                 if(closeTo.length>0 && self.isWalking){
 
