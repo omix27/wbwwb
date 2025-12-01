@@ -1,7 +1,7 @@
 # DEAR ASPIRING TRANSLATORS, PLEASE CHECK THE MAIN PAGE DESCRIPTION FIRST TO SEE IF YOUR TRANSLATION ALREADY EXISTS: https://ncase.itch.io/wbwwb (also check the Issues to see if your translation is already being worked on - collaborate with them if they're stuck!)
 
 *a game about news cycles, vicious cycles, infinite cycles*
-**[MYMOD](**https://omix27.github.io/wbwwb/)**
+**[MYMOD](https://omix27.github.io/wbwwb/)**
 **[PLAY](https://ncase.itch.io/wbwwb)**
 
 ---
